@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import css from './UserForm.module.css';
 import { Component } from 'react';
-import { nanoid } from 'nanoid';
+
 
 export class UserForm extends Component {
   state = {
