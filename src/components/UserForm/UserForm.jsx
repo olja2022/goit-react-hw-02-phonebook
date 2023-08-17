@@ -17,12 +17,13 @@ export class UserForm extends Component {
     e.preventDefault();
 
   
-    const userName = this.props.createUser({
-      name: this.state.name,
-      number: this.state.number,
-      id: nanoid(),
-    });
-
+    const userName = this.props.createUser({ ...this.state});
+// const userName = this.props.createUser({
+//       name: this.state.name,
+//       number: this.state.number,
+//       id: nanoid(),
+// });
+    
     userName && this.setState({ name: '', number: '' });
   };
 

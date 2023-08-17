@@ -3,6 +3,7 @@ import { UserForm } from './UserForm/UserForm';
 import { Contacts } from './Contacts/Contacts';
 import { Filter } from './Filter/Filter';
 import css from './App.module.css';
+import { nanoid } from 'nanoid';
 
 export class App extends Component {
   state = {
@@ -17,18 +18,21 @@ export class App extends Component {
 
   createUser = userData => {
     const isExist = this.state.contacts.find(contact => {
-      return contact.name === userData.name;
+      return contact.name.toLowerCase() === userData.name.toLowerCase();
     });
 
     if (isExist) {
       alert(`${userData.name} is already in contacts`);
-    } else {
-      this.setState(prevState => {
-        return { contacts: [...prevState.contacts, userData] };
+      return false;
+    }
+
+    const newContact = { ...userData, id: nanoid() };
+
+    this.setState(prevState => {
+        return { contacts: [...prevState.contacts, newContact] };
       });
 
-     return userData.name;
-    }
+     return true;    
   };
 
   getInput = ({ target: { name, value } }) => {
@@ -47,8 +51,16 @@ export class App extends Component {
     }));
   };
 
-  render() {
+  getFilteredContacts = () => {
     const { filter, contacts } = this.state;
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(filter.toLowerCase())
+    )
+}
+
+  render() {
+    const { filter } = this.state;
+    const filtered = this.getFilteredContacts()
     return (
       <div className={css.mainContainer}>
         <h1>Phonebook</h1>
@@ -58,13 +70,7 @@ export class App extends Component {
         <Filter filter={filter} getInput={this.getInput}></Filter>
 
         <Contacts
-          contacts={
-            filter
-              ? contacts.filter(({ name }) =>
-                  name.toLowerCase().includes(filter.toLowerCase())
-                )
-              : contacts
-          }
+          contacts={filtered}
           deleteContact={this.deleteContact}
         ></Contacts>
       </div>
